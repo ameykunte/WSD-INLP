@@ -3,6 +3,7 @@ import keras
 from keras.models import Sequential
 from keras.layers import Dense, Embedding, SimpleRNN, Dropout
 from keras.preprocessing.sequence import pad_sequences
+from sklearn.metrics import classification_report, precision_recall_fscore_support
 
 # Load data
 train_sentences = load_train_sentences()
@@ -37,3 +38,20 @@ model.fit(train_sequences, keras.utils.to_categorical(train_labels), batch_size=
 # Evaluate model
 loss, accuracy = model.evaluate(test_sequences, keras.utils.to_categorical(test_labels))
 print('Test accuracy:', accuracy)
+
+# Predict labels for test data
+test_pred = np.argmax(model.predict(test_sequences), axis=1)
+
+# Print classification report
+precision, recall, f1_score, _ = precision_recall_fscore_support(test_labels, test_pred, average='weighted')
+
+
+# Calculate and print precision, recall, and F1 score
+print('Precision:', precision)
+print('Recall:', recall)
+print('F1 score:', f1_score)
+
+# Calculate and print loss and val_loss
+loss, val_loss = model.evaluate(test_sequences, keras.utils.to_categorical(test_labels), verbose=0)
+print('Loss:', loss)
+print('Val_loss:', val_loss)
